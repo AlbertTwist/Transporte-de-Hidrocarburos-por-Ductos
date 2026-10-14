@@ -142,6 +142,24 @@ def p2_general(p1: float, q: float, gas: Gas, ducto: Gasoducto,
     raise RuntimeError("no convergió")
 
 
+def p1_general(p2: float, q: float, gas: Gas, ducto: Gasoducto,
+               f: float | None = None, c: float = C_GEN, tol: float = 1e-6) -> dict:
+    """Ec. 4.19 resuelta para la presión de entrada p1, dada la de salida."""
+    f = f if f is not None else ducto.f_rugoso()
+    t = f_a_r(ducto.t_f)
+    tb = f_a_r(ducto.t_b)
+    p1 = 1.2 * p2 + 50.0
+    for i in range(300):
+        z = _z_medio(gas, p1, p2, ducto.t_f)
+        es, le = _terminos_inclinacion(gas, ducto, z)
+        dp2 = f * (q / (ducto.E * c) * ducto.p_b / tb) ** 2 * gas.gamma * z * t * le / ducto.d**5
+        p1_n = math.sqrt(es * p2**2 + dp2)
+        if abs(p1_n - p1) < tol:
+            return {"p1": p1_n, "Z": z, "p_media": presion_media(p1_n, p2), "iteraciones": i + 1}
+        p1 = p1_n
+    raise RuntimeError("no convergió")
+
+
 def q_weymouth(p1, p2, gas: Gas, ducto: Gasoducto) -> float:
     """Tabla 4.1/4.2 — Weymouth: f = 0.032/d^(1/3) (Darcy); constante 433.5."""
     f = 0.032 / ducto.d ** (1.0 / 3.0)
@@ -198,6 +216,39 @@ def q_clinedinst(p1, p2, gas: Gas, ducto: Gasoducto, f: float | None = None) -> 
     return ducto.E * k * math.sqrt(i1 - i2) * ducto.d ** 2.5
 
 
+def q_cullender_smith(p1: float, p2: float, gas: Gas, ducto: Gasoducto,
+                      f: float | None = None, p_media_libro: bool = True) -> float:
+    """Cullender y Smith (Apéndice D) — Z y T se evalúan en cada punto, sin Z medio.
+
+    Con I = (p/ZT) / ((L/h) F² + 0.001 (p/ZT)²) y F² = 0.6667 f q²/d⁵ (q en MMpcd):
+        inclinada:   18.75 γ h = ∫ I dp     (regla de Simpson, Ec. D-5)
+        horizontal:  ∫ (p/ZT) dp = 18.75 γ L F²  (dos trapecios, Ecs. D-13 y D-14)
+    p_media_libro=True usa la presión media de la Ec. 4.46 como punto intermedio,
+    como en el Ejemplo D-1 (la regla de Simpson estricta usaría (p1+p2)/2).
+    """
+    from scipy.optimize import brentq
+
+    f = f if f is not None else ducto.f_rugoso()
+    t = f_a_r(ducto.t_f)
+    pm = presion_media(p1, p2) if p_media_libro else 0.5 * (p1 + p2)
+    j = [p / (gas.z(p, ducto.t_f) * t) for p in (p1, pm, p2)]
+    L_ft = ducto.L * 5280.0
+
+    def q_desde_f2(f2):
+        return math.sqrt(f2 * ducto.d**5 / (0.6667 * f)) * 1e6 * ducto.E
+
+    if abs(ducto.h) < 1e-9:
+        integral = 0.5 * ((p1 - pm) * (j[0] + j[1]) + (pm - p2) * (j[1] + j[2]))
+        return q_desde_f2(integral / (18.75 * gas.gamma * L_ft))
+
+    def residuo(f2):
+        ii = [x / ((L_ft / ducto.h) * f2 + 0.001 * x**2) for x in j]
+        return (p1 - p2) / 6.0 * (ii[0] + 4.0 * ii[1] + ii[2]) - 18.75 * gas.gamma * ducto.h
+
+    f2 = brentq(residuo, 1e-12, 10.0)
+    return q_desde_f2(f2)
+
+
 ECUACIONES = {
     "General (4.20)": q_general,
     "Panhandle A": q_panhandle_a,
@@ -205,8 +256,8 @@ ECUACIONES = {
     "Weymouth": q_weymouth,
     "Smith": q_smith,
     "Clinedinst": q_clinedinst,
+    "Cullender-Smith": q_cullender_smith,
 }
-# Pendiente: Cullender-Smith (Apéndice D del libro).
 
 
 # ------------------------------------------------- 4.4 sistemas complejos

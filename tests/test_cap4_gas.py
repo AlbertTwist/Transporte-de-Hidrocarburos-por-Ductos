@@ -64,3 +64,9 @@ def test_ejemplo_4_4_factores_friccion():
 def test_ejemplo_4_6_loop():
     x = fraccion_loop(Q, Q + 500e6, 28, 28, 1.0, 1.0)
     assert x == rel(0.6649, abs=1e-4)
+
+
+def test_cullender_en_tablas_4_2_y_4_3():
+    from ductos.gas import q_cullender_smith
+    assert q_cullender_smith(1900, 1500, GAS, Gasoducto(28, 41, 150)) / 1e6 == rel(1216.335, rel=1e-3)
+    assert q_cullender_smith(1900, 1500, GAS, Gasoducto(28, 41, 150, h=50)) / 1e6 == rel(1215.572, rel=1e-3)

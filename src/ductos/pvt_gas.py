@@ -176,3 +176,46 @@ def integral_ppr_sobre_z(ppr: float, tpr: float) -> float:
     """
     val, _ = quad(lambda x: x / z_dpr(x, tpr), 0.0, ppr, limit=200)
     return val
+
+
+# ------------------------------------------------- 4.5 presencia de condensados
+
+def peso_molecular_condensado(api: float | None = None, gamma_o: float | None = None) -> float:
+    """Ec. 4.53 — peso molecular del condensado en el tanque.
+
+    Con °API:   Mo = 6084 / (°API − 5.9)
+    Con γo:     Mo = 44.29 γo / (1.03 − γo)
+    """
+    if api is not None:
+        return 6084.0 / (api - 5.9)
+    if gamma_o is not None:
+        return 44.29 * gamma_o / (1.03 - gamma_o)
+    raise ValueError("indique api o gamma_o")
+
+
+def gamma_razasa_katz(gamma_g: float, gamma_o: float, rgc: float, mo: float) -> float:
+    """Ec. 4.52 — densidad relativa de la corriente gas + condensado.
+
+    rgc: relación gas-condensado [pie³/bl]. Usar el resultado en lugar de γg para Z.
+    """
+    return (gamma_g + 4584.0 * gamma_o / rgc) / (1.0 + 132800.0 * gamma_o / (mo * rgc))
+
+
+def gamma_vitter(gamma_g: float, gamma_l: float, rgl: float) -> float:
+    """Ec. 4.54 — densidad relativa ponderada por agua y condensado (Vitter).
+
+    rgl: relación gas-líquido [pie³/bl]; gamma_l: densidad relativa del líquido.
+    El numerador no es legible en la tesis escaneada; se usa la forma de la
+    literatura (Peffer, Miller y Hill, SPE 15655).
+    """
+    return (gamma_g + 4591.0 * gamma_l / rgl) / (1.0 + 1123.0 / rgl)
+
+
+def equivalente_gas_condensado(gamma_o: float, mo: float) -> float:
+    """Ec. 4.55 (Ikoku) — equivalente en gas del condensado [pie³ @ c.s./bl]."""
+    return 133037.0 * gamma_o / mo
+
+
+def gasto_total_gas(qg: float, qo: float, ge: float) -> float:
+    """Ec. 4.56 — gasto de gas total incluyendo el equivalente del condensado."""
+    return qg + ge * qo

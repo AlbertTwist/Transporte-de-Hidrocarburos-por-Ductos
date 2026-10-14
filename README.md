@@ -20,7 +20,11 @@ src/ductos/          paquete con toda la lógica de cálculo
   friccion.py        Cap. 2  factor de fricción (laminar, crítico, Colebrook, rugoso, Jain)
   pvt_gas.py         Cap. 1.2 propiedades del gas natural (Standing, Wichert-Aziz, DPR, Lee)
   liquidos.py        Cap. 3  flujo de líquidos, pozos inyectores, optimización de Graper
-  gas.py             Cap. 4  flujo de gas: general, Weymouth, Panhandle A/B, Smith, Clinedinst
+  gas.py             Cap. 4  flujo de gas: general, Weymouth, Panhandle A/B, Smith, Clinedinst, Cullender-Smith
+  costos_gas.py      Cap. 4.6-4.7 costos y diseño económico de gasoductos (Lagrange)
+  pozo_gas.py        Cap. 4.8 pozo productor de gas: nodal, erosión, Turner
+  estranguladores.py Cap. 4.9 estranguladores y válvulas de seguridad
+  raspatubos.py      Cap. 4.10 velocidad de corrida de diablos
 notebooks/           un notebook por capítulo, ejecutado y con salidas
   ia/                extensiones con IA
 tests/               verificación contra los ejemplos del libro
@@ -35,7 +39,7 @@ git clone https://github.com/AlbertTwist/Transporte-de-Hidrocarburos-por-Ductos.
 cd Transporte-de-Hidrocarburos-por-Ductos
 python -m venv .venv && source .venv/bin/activate   # en Windows: .venv\Scripts\activate
 pip install -e ".[dev,ia]"
-pytest                        # 34 pruebas contra los ejemplos del libro
+pytest                        # 51 pruebas contra los ejemplos del libro
 jupyter lab notebooks/
 ```
 
@@ -58,7 +62,7 @@ print(q_weymouth(1900, 1500, gas, ducto) / 1e6)       # ≈ 1127 MMpcd
 | 1 | Propiedades de los fluidos | Gas natural ✅ · aceite y agua pendientes |
 | 2 | Fundamentos de flujo, factor de fricción | ✅ |
 | 3 | Flujo de líquidos por tuberías | ✅ 3.1–3.5 (Ejemplos 3.4.1, 3.4.4 y 3.2 reproducidos) |
-| 4 | Flujo de gas por tuberías y estranguladores | ✅ 4.1–4.4 (Ejemplos 4.1–4.6) · pendientes 4.5–4.10 y Cullender-Smith |
+| 4 | Flujo de gas por tuberías y estranguladores | ✅ 4.1–4.10 y Apéndice D (Ejemplos 4.1–4.13, D-1) · falta la correlación de k (Ec. 4.116) |
 | 5 | Flujo multifásico: conceptos fundamentales | pendiente |
 | 6 | Multifásico horizontal: Bertuzzi-Tek-Poettmann, Eaton, Beggs y Brill, Dukler | pendiente |
 | 7 | Multifásico vertical: Poettmann-Carpenter, Orkiszewski, Beggs y Brill, Gilbert, anulares, baches | pendiente |
@@ -78,6 +82,11 @@ print(q_weymouth(1900, 1500, gas, ducto) / 1e6)       # ≈ 1127 MMpcd
 | 4.2 | Panhandle A | 1472.509 MMpcd | 1472.513 |
 | 4.3 | Weymouth inclinada | 1124.389 MMpcd | 1124.572 |
 | 4.6 | Fracción de loop | 0.6649 | 0.6649 |
+| 4.7 | d óptimo para pd = 1750 lb/pg² | 29.50 pg | 29.50 |
+| 4.7 | Razón de compresión óptima | 1.1645 | 1.1645 |
+| 4.8 | Presión en la línea de descarga, 12 MMpcd | 828 lb/pg² | 827 |
+| 4.12 | Velocidad del diablo en líquido | 6.433 pie/s | 6.433 |
+| D-1 | Cullender-Smith inclinada | 1215.43 MMpcd | 1215.23 |
 
 ## Extensiones con IA
 

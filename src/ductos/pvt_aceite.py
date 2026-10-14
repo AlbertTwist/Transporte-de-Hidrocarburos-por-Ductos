@@ -141,9 +141,8 @@ def _pf_de_yg(yg: float) -> float:
 def _yg_de_pf(pf: float) -> float:
     """Ec. 1.49 (ajuste inverso de la Ec. 1.44).
 
-    Coeficientes: 4.19545×10⁻³ pf³ − 5.91428×10⁻² pf² + 0.334519 pf + 0.0169879. En la
-    tesis escaneada los exponentes no son legibles; esta asignación reproduce el
-    y_g = 0.685 del Ejemplo 1.1 y es consistente con la Ec. 1.44 (ver docs/erratas.md).
+    y_g = 419.545×10⁻⁵ pf³ − 591.428×10⁻⁴ pf² + 334.519×10⁻³ pf + 169.879×10⁻⁴
+    (confirmado con el libro impreso, p. 19; reproduce el y_g = 0.685 del Ejemplo 1.1).
     """
     return 4.19545e-3 * pf**3 - 5.91428e-2 * pf**2 + 0.334519 * pf + 0.0169879
 
@@ -177,7 +176,11 @@ def densidad_aceite_saturado(rs: float, gamma_gd: float, gamma_o: float, bo: flo
 
 
 def viscosidad_aceite_muerto(api: float, t_f: float) -> float:
-    """Ecs. 1.54-1.57 (Beggs y Robinson)."""
+    """Ecs. 1.54-1.57 (Beggs y Robinson).
+
+    X = Y T^−1.163. El libro imprime T^−1.63 en la Ec. 1.55, pero el Ejemplo 1.1 usa
+    −1.163, que es el exponente de la correlación original (ver docs/erratas.md).
+    """
     z = 3.0324 - 0.02023 * api
     x = 10.0**z * t_f**-1.163
     return 10.0**x - 1.0
@@ -201,9 +204,8 @@ def compresibilidad_aceite(p: float, rs: float, t_f: float, gamma_gs: float, api
                            c4: float = -1180.0) -> float:
     """Ec. 1.59 (Vázquez y Beggs).
 
-    co = (−1433 + 5 Rs + 17.2 T + c4 γgs + 12.61 °API) / (10⁵ p)
-    c4 = −1180 en la correlación original; en la tesis escaneada parece leerse −1100
-    (ver docs/erratas.md).
+    co = (−1433 + 5 Rs + 17.2 T + c4 γgs + 12.61 °API) / (10⁵ p),  c4 = −1180
+    (confirmado con el libro impreso, p. 19).
     """
     return (-1433.0 + 5.0 * rs + 17.2 * t_f + c4 * gamma_gs + 12.61 * api) / (1e5 * p)
 

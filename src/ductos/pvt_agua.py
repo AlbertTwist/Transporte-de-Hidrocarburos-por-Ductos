@@ -13,9 +13,11 @@ def bw_saturada(p: float, t_f: float, variante: str = "correlacion") -> float:
     """Ec. 1.69 — factor de volumen del agua saturada.
 
     variante="correlacion": Bw = 1 + 1.2×10⁻⁴ (T−60) + 1.0×10⁻⁶ (T−60)² − 3.33×10⁻⁶ p
-    variante="ejemplo":     sin el cuadrado, como se sustituye en el Ejemplo 1.1 (Bw = 1.0103)
-    Con el cuadrado, el agua a 200 °F se expande ~3 %, que es lo físicamente esperado
-    (ver docs/erratas.md).
+                            (Gould, 1974)
+    variante="ejemplo":     sin el cuadrado, como la imprime el libro (Ec. 1.69, p. 20) y la usa
+                            el Ejemplo 1.1 (Bw = 1.0103)
+    Con el cuadrado, el agua a 200 °F y 2000 lb/pg² se expande ~3 %, lo físicamente esperado;
+    sin él, apenas 1 % (ver docs/erratas.md).
     """
     dt = t_f - 60.0
     termino = dt**2 if variante == "correlacion" else dt
@@ -50,7 +52,11 @@ def tension_superficial_agua_gas(p: float, t_f: float) -> float:
 
 
 def rsw(p: float, t_f: float, nacl: float = 0.0) -> float:
-    """Ecs. 1.78-1.83 — solubilidad del gas en el agua [pie³/bl], corregida por salinidad."""
+    """Ecs. 1.78-1.83 — solubilidad del gas en el agua [pie³/bl], corregida por salinidad.
+
+    T' = (T* − 90)/10. El libro imprime (T* − 32)/10 en la Ec. 1.80, pero el Ejemplo 1.1
+    usa 90 (T' = 0.333 a 200 °F); con 32 el resultado sería 10.4 en lugar de 12.21 pie³/bl.
+    """
     pp = 1.0 - math.exp(-p / 2276.0)
     tc = 5.0 / 9.0 * (t_f - 32.0)
     tt = (tc - 90.0) / 10.0

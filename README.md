@@ -39,7 +39,7 @@ git clone https://github.com/AlbertTwist/Transporte-de-Hidrocarburos-por-Ductos.
 cd Transporte-de-Hidrocarburos-por-Ductos
 python -m venv .venv && source .venv/bin/activate   # en Windows: .venv\Scripts\activate
 pip install -e ".[dev,ia]"
-pytest                        # 53 pruebas contra los ejemplos del libro
+pytest                        # 67 pruebas contra los ejemplos del libro
 jupyter lab notebooks/
 ```
 

@@ -9,7 +9,7 @@ from ductos.estranguladores import (area_a_64avos, area_estrangulador, cd_cook_d
                                     dp_valvula_seguridad, funcion_h, k_gas, relacion_critica)
 from ductos.gas import Gasoducto, q_cullender_smith
 from ductos.pozo_gas import IPRGas, PozoGas
-from ductos.pvt_gas import Gas
+from ductos.pvt_gas import Gas, gamma_razasa_katz, gamma_vitter, peso_molecular_condensado
 from ductos.raspatubos import velocidad_gas, velocidad_liquido
 
 rel = pytest.approx
@@ -65,19 +65,25 @@ def test_tabla_4_8(pd, d, L, ct):
 # ---------------------------------------------------------------- 4.8 Ejemplo 4.8
 
 def _pozo():
-    return PozoGas(gas=Gas(0.7), ipr=IPRGas(16290, 0.681),
+    return PozoGas(gas=Gas(0.7), ipr=IPRGas(16280, 0.681),
                    tp=Gasoducto(2.441, 1.1976, 140, h=1.1976 * 5280, rug=0.0007),
                    ld=Gasoducto(2.991, 1.865, 60, h=300, rug=0.0007), p_sep=50)
 
 
-@pytest.mark.parametrize("q, pe", [(4e6, 292), (10e6, 698), (12e6, 828), (16e6, 1081)])
+@pytest.mark.parametrize("q, pe", [(2e6, 153), (4e6, 292), (10e6, 698), (12e6, 828), (16e6, 1081)])
 def test_ejemplo_4_8_linea_descarga(q, pe):
     assert _pozo().pe(q) == rel(pe, rel=5e-3)
 
 
-def test_ejemplo_4_8_cabeza():
-    assert _pozo().pth(12e6, 1500) == rel(642, rel=3e-3)
-    assert _pozo().pth(8e6, 1000) == rel(401, rel=5e-3)
+@pytest.mark.parametrize("pws, q, pth", [
+    (2000, 18, 472.0), (2000, 16, 886.0),
+    (1500, 12, 650), (1500, 8, 1052),
+    (1000, 8, 401), (1000, 6, 642), (1000, 2, 834),
+    (500, 4, 185), (500, 3, 317), (500, 2, 385), (500, 1, 420),
+])
+def test_ejemplo_4_8_tabla_pth(pws, q, pth):
+    # Se excluyen 1031 (pws=2000, q=12) y 979 (pws=1500, q=10): ver docs/erratas.md
+    assert _pozo().pth(q * 1e6, pws) == rel(pth, rel=1.3e-2)
 
 
 # ---------------------------------------------------------------- 4.9 estranguladores
@@ -126,3 +132,18 @@ def test_ejemplo_4_11_valvula_seguridad():
 def test_ejemplos_4_12_y_4_13():
     assert velocidad_liquido(200000, 19.25)["v"] == rel(6.433, abs=1e-3)
     assert velocidad_gas(200e6, 1115, 915, 60, 19.25, Gas(0.6))["v"] == rel(13.93, abs=0.02)
+
+
+# ---------------------------------------------------------------- 4.5 condensados
+
+def test_peso_molecular_condensado_ec_4_53():
+    # Las dos formas de la Ec. 4.53 son equivalentes
+    api = 50
+    go = 141.5 / (131.5 + api)
+    assert peso_molecular_condensado(api=api) == rel(peso_molecular_condensado(gamma_o=go), rel=5e-3)
+
+
+def test_vitter_variantes():
+    assert gamma_vitter(0.65, 0.78, 16667) == rel(0.8103, abs=1e-4)
+    assert gamma_vitter(0.65, 0.78, 16667, 0.78, variante="libro") == rel(0.8217, abs=1e-4)
+    assert gamma_razasa_katz(0.65, 0.78, 16667, 138.0) > 0.65

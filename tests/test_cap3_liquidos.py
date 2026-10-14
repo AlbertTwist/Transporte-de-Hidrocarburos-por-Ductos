@@ -66,3 +66,10 @@ def test_tabla_3_6_graper(q, d, dp, bhp):
     assert r["d"] == rel(d, abs=2e-3)
     assert r["dp_milla"] == rel(dp, rel=1e-3)
     assert r["bhp_milla"] == rel(bhp, rel=1e-3)
+
+
+def test_ec_3_42_gel():
+    from ductos.liquidos import dp_arranque_gel
+    assert dp_arranque_gel(10, 20, 12) == rel(293.3, abs=0.1)              # 17.6 τ L / d
+    assert dp_arranque_gel(1, 1, 1, variante="libro") == rel(175900)        # coeficiente impreso
+    assert dp_arranque_gel(10, 20, 12, factor_seguridad=2.0) == rel(586.7, abs=0.1)

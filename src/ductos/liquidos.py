@@ -194,14 +194,25 @@ def costo_total_milla(d: float, q: float, gamma: float, mu: float,
 
 # ------------------------------------------------ 3.5.5 Crudos viscosos
 
-def dp_arranque_gel(tau: float, L: float, d: float, factor_seguridad: float = 1.0) -> float:
+def dp_arranque_gel(tau: float, L: float, d: float, factor_seguridad: float = 1.0,
+                    variante: str = "fisica") -> float:
     """Ec. 3.42 — presión para romper el gel de un crudo parafínico [psi].
 
-    Δp = 4 τ L / D  en unidades prácticas:  Δp = 17.6 τ L / d
-        τ [lbf/100 pie²], L [millas], d [pg]
+    Balance de fuerzas Δp·πD²/4 = τ·πD·L  →  Δp = 4 τ L / D. En unidades prácticas
+    (τ [lbf/100 pie²], L [millas], d [pg]):
 
-    El libro recomienda un factor de seguridad de 1.5 a 2.0 sobre el valor predicho.
-    El coeficiente se derivó aquí; el de la fuente es ilegible en la tesis
-    escaneada (ver docs/erratas.md).
+        variante="fisica": Δp = 17.6 τ L / d
+        variante="libro":  Δp = 175 900 τ L / d (coeficiente impreso)
+
+    El coeficiente impreso es 4·5277·12/144 multiplicado por 100 en lugar de dividido:
+    trata "lbf/100 pie²" como si hubiera que multiplicar por 100. Sobrestima la presión
+    10 000 veces (ver docs/erratas.md). El libro recomienda un factor de seguridad de
+    1.5 a 2.0 sobre el valor predicho.
     """
-    return factor_seguridad * 4.0 * (tau / 100.0) / 144.0 * (L * 5280.0) / (d / 12.0)
+    if variante == "fisica":
+        coef = 4.0 * (1.0 / 100.0) / 144.0 * 5280.0 * 12.0
+    elif variante == "libro":
+        coef = 175900.0
+    else:
+        raise ValueError("variante debe ser 'fisica' o 'libro'")
+    return factor_seguridad * coef * tau * L / d

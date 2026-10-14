@@ -197,18 +197,29 @@ def gamma_razasa_katz(gamma_g: float, gamma_o: float, rgc: float, mo: float) -> 
     """Ec. 4.52 — densidad relativa de la corriente gas + condensado.
 
     rgc: relación gas-condensado [pie³/bl]. Usar el resultado en lugar de γg para Z.
+    El libro recomienda el método para R_L ≥ 3900 pie³/bl; por debajo, una correlación
+    de flujo multifásico.
     """
     return (gamma_g + 4584.0 * gamma_o / rgc) / (1.0 + 132800.0 * gamma_o / (mo * rgc))
 
 
-def gamma_vitter(gamma_g: float, gamma_l: float, rgl: float) -> float:
+def gamma_vitter(gamma_g: float, gamma_l: float, rgl: float, gamma_o: float | None = None,
+                 variante: str = "literatura") -> float:
     """Ec. 4.54 — densidad relativa ponderada por agua y condensado (Vitter).
 
-    rgl: relación gas-líquido [pie³/bl]; gamma_l: densidad relativa del líquido.
-    El numerador no es legible en la tesis escaneada; se usa la forma de la
-    literatura (Peffer, Miller y Hill, SPE 15655).
+    rgl: relación gas-líquido [pie³/bl]; gamma_l: densidad relativa ponderada del líquido.
+    variante="literatura": denominador 1 + 1123/R_L (Peffer, Miller y Hill, SPE 15655).
+    variante="libro":      denominador 1 + 1123 γo/R_L, como aparece impreso
+                           (probable errata; ver docs/erratas.md).
     """
-    return (gamma_g + 4591.0 * gamma_l / rgl) / (1.0 + 1123.0 / rgl)
+    num = gamma_g + 4591.0 * gamma_l / rgl
+    if variante == "literatura":
+        return num / (1.0 + 1123.0 / rgl)
+    if variante == "libro":
+        if gamma_o is None:
+            raise ValueError("la variante del libro requiere gamma_o")
+        return num / (1.0 + 1123.0 * gamma_o / rgl)
+    raise ValueError("variante debe ser 'literatura' o 'libro'")
 
 
 def equivalente_gas_condensado(gamma_o: float, mo: float) -> float:

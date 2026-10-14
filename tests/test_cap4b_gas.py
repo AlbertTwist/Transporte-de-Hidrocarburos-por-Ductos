@@ -5,7 +5,8 @@ import pytest
 from ductos.costos_gas import (DatosCostosGas, barrido_presion_descarga, diseno_economico,
                                razon_compresion_optima)
 from ductos.estranguladores import (area_a_64avos, area_estrangulador, cd_cook_dotterweich,
-                                    dp_valvula_seguridad, funcion_h, relacion_critica)
+                                    diametro_cook_dotterweich, diametro_ec_4_134,
+                                    dp_valvula_seguridad, funcion_h, k_gas, relacion_critica)
 from ductos.gas import Gasoducto, q_cullender_smith
 from ductos.pozo_gas import IPRGas, PozoGas
 from ductos.pvt_gas import Gas
@@ -94,10 +95,30 @@ def test_ejemplo_4_9():
     assert cd_cook_dotterweich(32) == rel(0.828, abs=1e-3)
 
 
+def test_ejemplo_4_9_cook_dotterweich_y_4_10():
+    g = Gas(0.69)
+    r = diametro_cook_dotterweich(1340927, 514.3, 411.5, g, 140, 1.25)
+    assert r["d64_libro"] == rel(23.83, abs=0.02)        # área efectiva, como el libro
+    assert r["d64"] == rel(26.17, abs=0.05)              # diámetro geométrico (A = CdA/Cd)
+    assert diametro_ec_4_134(1340927, 514.3, 140, 0.69) == rel(23.1, abs=0.05)
+
+
+def test_k_gas_figura_4_16():
+    assert k_gas(0.69, 140) == rel(1.25, abs=0.01)       # el Ejemplo 4.9 usa k = 1.25 medido
+    for t in (50, 100, 150, 200, 250):                    # k decrece con γ en el intervalo confiable
+        ks = [k_gas(g, t) for g in (0.65, 0.7, 0.75, 0.8)]
+        assert all(a > b for a, b in zip(ks, ks[1:]))
+        assert all(1.15 < x < 1.32 for x in ks)
+
+
 def test_ejemplo_4_11_valvula_seguridad():
-    r = dp_valvula_seguridad(55e6, 1900, 150, Gas(0.6), 2.992, 1.0, cd=0.895, z=0.87)
-    assert r["beta"] == rel(0.334, abs=1e-3)
-    assert r["dp"] == rel(907.74, rel=5e-3)
+    g = Gas(0.6)
+    r = dp_valvula_seguridad(55e6, 1900, 150, g, 2.992, 1.0, z=0.87, con_psi4=False)
+    assert r["psi"] == rel(0.334, abs=1e-3)
+    assert r["dp"] == rel(907.74, abs=0.05)
+    assert dp_valvula_seguridad(55e6, 1900, 150, g, 2.992, 1.0, z=0.87)["dp"] == rel(896.4, abs=0.1)
+    it = dp_valvula_seguridad(55e6, 1900, 150, g, 2.992, 1.0, y=None, k=1.28)
+    assert it["Y"] == rel(0.85, abs=0.01)                # valida la aproximación del API
 
 
 # ---------------------------------------------------------------- 4.10 raspatubos

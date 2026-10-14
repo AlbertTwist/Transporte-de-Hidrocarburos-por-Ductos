@@ -39,7 +39,7 @@ git clone https://github.com/AlbertTwist/Transporte-de-Hidrocarburos-por-Ductos.
 cd Transporte-de-Hidrocarburos-por-Ductos
 python -m venv .venv && source .venv/bin/activate   # en Windows: .venv\Scripts\activate
 pip install -e ".[dev,ia]"
-pytest                        # 51 pruebas contra los ejemplos del libro
+pytest                        # 53 pruebas contra los ejemplos del libro
 jupyter lab notebooks/
 ```
 
@@ -62,7 +62,7 @@ print(q_weymouth(1900, 1500, gas, ducto) / 1e6)       # ≈ 1127 MMpcd
 | 1 | Propiedades de los fluidos | Gas natural ✅ · aceite y agua pendientes |
 | 2 | Fundamentos de flujo, factor de fricción | ✅ |
 | 3 | Flujo de líquidos por tuberías | ✅ 3.1–3.5 (Ejemplos 3.4.1, 3.4.4 y 3.2 reproducidos) |
-| 4 | Flujo de gas por tuberías y estranguladores | ✅ 4.1–4.10 y Apéndice D (Ejemplos 4.1–4.13, D-1) · falta la correlación de k (Ec. 4.116) |
+| 4 | Flujo de gas por tuberías y estranguladores | ✅ 4.1–4.10 y Apéndice D (Ejemplos 4.1–4.13, D-1) |
 | 5 | Flujo multifásico: conceptos fundamentales | pendiente |
 | 6 | Multifásico horizontal: Bertuzzi-Tek-Poettmann, Eaton, Beggs y Brill, Dukler | pendiente |
 | 7 | Multifásico vertical: Poettmann-Carpenter, Orkiszewski, Beggs y Brill, Gilbert, anulares, baches | pendiente |

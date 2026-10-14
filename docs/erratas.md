@@ -25,7 +25,8 @@ Tipos: **E** error de la fuente · **I** dato ilegible en el escaneo, reconstrui
 | 15 | N | 4.7, Tabla 4.8 | El mínimo se lee en una malla de 250 lb/pg² (1750) | `presion_descarga_optima` da ≈1840 lb/pg² | 0.03 % en costo |
 | 16 | I | 4.8, Ej. 4.8 | No es claro a qué elemento corresponden "300 pies" | Desnivel de la línea de descarga: reproduce 292, 698, 828 y 1081 lb/pg² | **verificar con el libro** |
 | 17 | E | 4.8.1, Ec. 4.106 | Coeficiente 1291.539×10⁶ | Deducido: 1.29×10⁶ (el exponente debería ser 10³) | factor 1000 |
-| 18 | I | 4.9.3, Ec. 4.129 | Constante incoherente con el resultado del Ejemplo 4.9 | Deducida de primeros principios: 23.4/64 pg (libro 23.83/64; ambos → 24/64) | 2 % en d |
-| 19 | I | 4.9.3, Ec. 4.134 y Ecs. 4.116-4.128 | Constante y coeficientes ilegibles | No implementadas; se usa k medido | pendiente |
-| 20 | I | 4.9.4, Ecs. 4.135-4.137 | Válvula de seguridad parcialmente ilegible | Ecuación de orificio con Y = 0.85; Cd ≈ 0.895 reproduce 907.7 lb/pg² | **verificar con el libro** |
+| 18 | E | 4.9.3, Ec. 4.129 y Ej. 4.9 | Cd = 1.9083×10⁻⁴; el ejemplo lo multiplica, obtiene dφ² = 25 y lo reporta como dφ = 25/64 | Constante deducida: q = 238.4 dφ² pth √[kH/((k−1)γZT)] → 23.4/64 (`diametro_ec_4_129`) | ambos → 24/64; confirmado con el libro impreso |
+| 19 | E | 4.9.1, Ecs. 4.116-4.128 | Correlación de k: b5 impreso con 0.06673 Y⁴, que la hace divergir; la tesis trae 0.006673 | `k_gas` con 0.006673; fiable solo para 0.65 ≤ γ ≤ 0.80 (el polinomio de grado 9 diverge fuera); k(0.69, 140 °F) = 1.254 vs 1.25 medido | confirmado con el libro impreso |
+| 19b | N | 4.9.3, Ej. 4.9 (Cook-Dotterweich) | Convierte CdA con la Ec. 4.133 → 23.83/64 es el diámetro del área efectiva | `d64_libro` = 23.83/64 y `d64` geométrico = 26.2/64 | 10 % en d |
+| 20 | E | 4.9.4, Ec. 4.135 y Ej. 4.11 | Constante impresa 69.22×10⁻⁶; el ejemplo usa en el corchete 12.51, que corresponde a 10⁻⁸, y omite (1 − ψ⁴) al sustituir | K = 69.22×10⁻⁸; `con_psi4=False` reproduce 907.74; con el factor, 896.4; Y iterado (Ec. 4.137) = 0.845 | 1.2 %; confirmado con el libro impreso |
 | 21 | N | Apéndice D | Cullender-Smith con 5277 pies/milla | 5280 pies/milla | 0.03 % |

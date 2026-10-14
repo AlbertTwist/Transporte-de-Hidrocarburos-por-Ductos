@@ -1,0 +1,22 @@
+name: verificacion
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar
+        run: pip install -e ".[dev,ia]"
+      - name: Pruebas contra los ejemplos del libro
+        run: pytest -q
+      - name: Ejecutar notebooks
+        run: |
+          python -m ipykernel install --user --name python3
+          python scripts/ejecutar_notebooks.py notebooks/*.ipynb notebooks/ia/*.ipynb

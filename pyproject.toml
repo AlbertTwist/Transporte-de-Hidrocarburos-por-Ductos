@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ductos"
+version = "0.1.0"
+description = "Transporte de hidrocarburos por ductos: métodos del libro de Garaicochea en Python, para clase"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Alberto Vázquez Contreras" }]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "pint>=0.22",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "nbclient>=0.9", "nbformat>=5.9", "ipykernel>=6"]
+ia = ["scikit-learn>=1.3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

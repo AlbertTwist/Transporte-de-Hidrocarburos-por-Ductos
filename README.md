@@ -19,6 +19,8 @@ src/ductos/          paquete con toda la lógica de cálculo
   constantes.py      unidades prácticas y constantes derivadas de primeros principios
   friccion.py        Cap. 2  factor de fricción (laminar, crítico, Colebrook, rugoso, Jain)
   pvt_gas.py         Cap. 1.2 propiedades del gas natural (Standing, Wichert-Aziz, DPR, Lee)
+  pvt_aceite.py      Cap. 1.3-1.4 y 1.7 aceite: Standing, Vázquez, Oistein, Lasater, Beggs-Robinson
+  pvt_agua.py        Cap. 1.5-1.6 agua saturada y bajosaturada
   liquidos.py        Cap. 3  flujo de líquidos, pozos inyectores, optimización de Graper
   gas.py             Cap. 4  flujo de gas: general, Weymouth, Panhandle A/B, Smith, Clinedinst, Cullender-Smith
   costos_gas.py      Cap. 4.6-4.7 costos y diseño económico de gasoductos (Lagrange)
@@ -39,7 +41,7 @@ git clone https://github.com/AlbertTwist/Transporte-de-Hidrocarburos-por-Ductos.
 cd Transporte-de-Hidrocarburos-por-Ductos
 python -m venv .venv && source .venv/bin/activate   # en Windows: .venv\Scripts\activate
 pip install -e ".[dev,ia]"
-pytest                        # 67 pruebas contra los ejemplos del libro
+pytest                        # 88 pruebas contra los ejemplos del libro
 jupyter lab notebooks/
 ```
 
@@ -59,7 +61,7 @@ print(q_weymouth(1900, 1500, gas, ducto) / 1e6)       # ≈ 1127 MMpcd
 
 | Cap. | Tema | Estado |
 |---|---|---|
-| 1 | Propiedades de los fluidos | Gas natural ✅ · aceite y agua pendientes |
+| 1 | Propiedades de los fluidos | ✅ gas, aceite, agua y ajustes pVT (Ejemplos 1.1 y 1.2) |
 | 2 | Fundamentos de flujo, factor de fricción | ✅ |
 | 3 | Flujo de líquidos por tuberías | ✅ 3.1–3.5 (Ejemplos 3.4.1, 3.4.4 y 3.2 reproducidos) |
 | 4 | Flujo de gas por tuberías y estranguladores | ✅ 4.1–4.10 y Apéndice D (Ejemplos 4.1–4.13, D-1) |
@@ -75,6 +77,8 @@ print(q_weymouth(1900, 1500, gas, ducto) / 1e6)       # ≈ 1127 MMpcd
 | Ejemplo | Magnitud | Libro | Código |
 |---|---|---|---|
 | 1.1 | Z del gas libre amargo | 0.86067 | 0.86066 |
+| 1.1 | Rs a 2000 lb/pg² y 200 °F (Lasater corregido) | 456 pie³/bl | 456.3 |
+| 1.2 | Bo a 1000 lb/pg² (Standing corregido) | 1.1579 | 1.1579 |
 | 3.4.1 b | Δp por fricción | 192.8 lb/pg² | 192.8 |
 | 3.4.4 | Gasto de inyección | 7250 bl/d | 7259 (gráfica) |
 | 3.2 (Graper) | d óptimo, 155 000 bl/d | 14.734 pg | 14.734 |

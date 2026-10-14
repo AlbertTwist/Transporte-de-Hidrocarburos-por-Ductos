@@ -32,3 +32,12 @@ Tipos: **E** error de la fuente · **I** dato ilegible en el escaneo, reconstrui
 | 19b | N | 4.9.3, Ej. 4.9 (Cook-Dotterweich) | Convierte CdA con la Ec. 4.133 → 23.83/64 es el diámetro del área efectiva | `d64_libro` = 23.83/64 y `d64` geométrico = 26.2/64 | 10 % en d |
 | 20 | E | 4.9.4, Ec. 4.135 y Ej. 4.11 | Constante impresa 69.22×10⁻⁶; el ejemplo usa en el corchete 12.51, que corresponde a 10⁻⁸, y omite (1 − ψ⁴) al sustituir | K = 69.22×10⁻⁸; `con_psi4=False` reproduce 907.74; con el factor, 896.4; Y iterado (Ec. 4.137) = 0.845 | 1.2 %; confirmado con el libro impreso |
 | 21 | N | Apéndice D | Cullender-Smith con 5277 pies/milla | 5280 pies/milla | 0.03 % |
+| 22 | E | 1.3.2, Ej. 1.1 (Tabla 1) | Rs de Vázquez = 610 pie³/bl, incoherente con su propia pb de Vázquez (3626) | 676.6 pie³/bl (C_Rs = 1.1085 en lugar de 1.2295) | no cambia la selección de correlaciones |
+| 23 | I | 1.3.4, Ec. 1.49 | Exponentes del ajuste inverso de Lasater ilegibles en la tesis | y_g = 4.19545×10⁻³ pf³ − 5.91428×10⁻² pf² + 0.334519 pf + 0.0169879: reproduce y_g = 0.685 y es consistente con la Ec. 1.44 | **verificar con el libro** |
+| 24 | N | 1.3.3, Ec. 1.67 | El exponente de T para pb es 0.130 (aceite volátil), aunque el Rs del mismo aceite negro usa 0.172 | Se reproduce el libro; ambos exponentes son parámetros | pb Oistein = 2971 |
+| 25 | E | 1.5.1, Ej. 1.1 | Bw = 1.0103: el ejemplo sustituye (T − 60) donde la Ec. 1.69 lleva (T − 60)² | Por defecto con el cuadrado (1.0297); `variante="ejemplo"` reproduce 1.0103 | 2 %; **verificar la forma impresa de la Ec. 1.69** |
+| 26 | I | 1.4.1, Ec. 1.59 | Coeficiente de γgs en la compresibilidad del aceite: la tesis parece decir −1100 | −1180 (Vázquez y Beggs original), parámetro `c4` | **verificar con el libro** |
+| 27 | N | 1.8, Ej. 1.1 | Elige Standing para Bo, pero calcula Bo a 2000 lb/pg² con Oistein corregido (1.28363); la tabla del Ej. 1.2 sí usa Standing (1.2851) | Standing corregido; el notebook muestra ambos | 0.1 % |
+| 28 | E | 1.8, Ej. 1.2 | "se supuso una temperatura media igual a 200 °C" | 200 °F | tipográfica |
+| 29 | I | 1.4.2, 1.4.4, 1.6.2 y 1.6.3 (Ecs. 1.60, 1.63, 1.89 y 1.90) | Ecuaciones de densidad y factor de volumen bajosaturados ilegibles | Formas exponenciales usuales: ρ = ρb exp[c (p − pb)], B = Bb exp[c (pb − p)] | **verificar con el libro** |
+

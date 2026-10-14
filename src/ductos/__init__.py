@@ -9,6 +9,8 @@ Módulos
 constantes : unidades prácticas y constantes derivadas
 friccion   : Cap. 2, factor de fricción (laminar, crítico, Colebrook, rugoso, Jain)
 pvt_gas    : Cap. 1.2, propiedades del gas natural (Z de DPR, μg de Lee, etc.)
+pvt_aceite : Cap. 1.3-1.4 y 1.7, propiedades del aceite y ajustes pVT
+pvt_agua   : Cap. 1.5-1.6, propiedades del agua
 liquidos   : Cap. 3, flujo de líquidos, pozos inyectores, optimización de Graper
 gas        : Cap. 4.1-4.4, flujo de gas (general, Weymouth, Panhandle, Clinedinst, Cullender-Smith)
 costos_gas : Cap. 4.6-4.7, costos y diseño económico de gasoductos
@@ -18,8 +20,8 @@ raspatubos : Cap. 4.10, velocidad de corrida de diablos
 """
 
 from . import (constantes, costos_gas, estranguladores, friccion, gas, liquidos, pozo_gas,
-               pvt_gas, raspatubos)
+               pvt_aceite, pvt_agua, pvt_gas, raspatubos)
 
 __all__ = ["constantes", "costos_gas", "estranguladores", "friccion", "gas", "liquidos",
-           "pozo_gas", "pvt_gas", "raspatubos"]
-__version__ = "0.2.0"
+           "pozo_gas", "pvt_aceite", "pvt_agua", "pvt_gas", "raspatubos"]
+__version__ = "0.3.0"
